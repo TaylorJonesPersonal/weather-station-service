@@ -30,6 +30,7 @@ public class Reading {
     private Timestamp updatedAt;
 
     private float temperature;
+    private int probeTemperature;
     private float relativeHumidity;
     private float barometricPressure;
     private int pulses;
