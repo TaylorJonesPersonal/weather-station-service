@@ -1,7 +1,7 @@
     package com.fujita.weather_station_service.Service.impl;
 
     import com.diozero.api.DigitalInputDevice;
-    import com.fujita.weather_station_service.Constants.PythonConstants;
+    import com.fujita.weather_station_service.Constants.ScriptConstants;
     import com.fujita.weather_station_service.Constants.WindVaneConstants;
     import com.fujita.weather_station_service.Model.Reading;
     import com.fujita.weather_station_service.Repository.ReadingRepository;
@@ -10,12 +10,11 @@
     import com.pi4j.drivers.sensor.environment.bmx280.Bmx280Driver;
     import com.pi4j.drivers.sensor.environment.bmx280.Bmx280Driver.Measurement;
     import org.springframework.beans.factory.annotation.Autowired;
-    import org.springframework.beans.factory.annotation.Value;
     import org.springframework.stereotype.Service;
 
     import java.io.BufferedReader;
+    import java.io.IOException;
     import java.io.InputStreamReader;
-    import java.nio.file.Path;
     import java.text.DecimalFormat;
     import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,13 +26,19 @@
         private final Bmx280Driver bme280;
         private final DigitalInputDevice anemometer;
         private final CSVWriterService csvWriter;
+        private final ScriptConstants scriptConstants;
 
         @Autowired
-        public ReadingCollectionServiceImpl(ReadingRepository readingRepository, Bmx280Driver bme280, DigitalInputDevice anemometer, CSVWriterService csvWriter) {
+        public ReadingCollectionServiceImpl(ReadingRepository readingRepository,
+                                            Bmx280Driver bme280,
+                                            DigitalInputDevice anemometer,
+                                            CSVWriterService csvWriter,
+                                            ScriptConstants scriptConstants) {
             this.readingRepository = readingRepository;
             this.bme280 = bme280;
             this.anemometer = anemometer;
             this.csvWriter = csvWriter;
+            this.scriptConstants = scriptConstants;
         }
 
         public void createReading() {
@@ -67,7 +72,7 @@
                         // Execute the working Python hardware block and read its output stream
                         double calculatedVoltage = 0.0;
                         try {
-                            Process process = Runtime.getRuntime().exec(new String[]{"python3", "-c", PythonConstants.readMCP3008Script});
+                            Process process = Runtime.getRuntime().exec(new String[]{"python3", "-c", ScriptConstants.readMCP3008Script});
                             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                                 String outputLine = reader.readLine();
                                 if (outputLine != null && !outputLine.trim().isEmpty()) {
@@ -78,6 +83,10 @@
                         } catch (Exception processEx) {
                             System.err.println("Failed to fetch data from Python SPI bridge: " + processEx.getMessage());
                         }
+
+                        int probeTemperature = getProbeTemperature();
+                        System.out.println("Probe Temperature: " + ((double) getProbeTemperature() / 1000 * 1.8 + 32 ));
+                        newReading.setProbeTemperature(probeTemperature);
 
                         // Map the returned voltage safely back to our 10-bit integer scale
                         int rawVaneValue = (int) Math.round((calculatedVoltage / 3.3) * 1023.0);
@@ -104,5 +113,24 @@
                 }
             }
             return WindVaneConstants.DIRECTIONS[closestIdx];
+        }
+
+        @Override
+        public int getProbeTemperature() {
+            int probeTemperature = 0;
+            try {
+                System.out.println("RUNNING: " + "/bin/sh" + "-c " + scriptConstants.getReadDS18B20Script());
+                Process process = Runtime.getRuntime().exec(new String[]{"/bin/sh", "-c", scriptConstants.getReadDS18B20Script()});
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String outputLine = reader.readLine();
+                    System.out.println("RESULT OF RUN: " + outputLine);
+                    if (outputLine != null && !outputLine.trim().isEmpty()) {
+                        probeTemperature = Integer.parseInt(outputLine.trim());
+                    }
+                }
+                return probeTemperature;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
