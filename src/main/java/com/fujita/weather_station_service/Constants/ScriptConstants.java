@@ -1,16 +1,18 @@
 package com.fujita.weather_station_service.Constants;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+@Getter
 @Component
 public class ScriptConstants {
     private final String readDS18B20Script;
-    private final String readDS18B20Execution = "cat w1_slave | grep -oP 't=\\K.*'";
 
     @Autowired
     public ScriptConstants(@Value("${storage.ds18B20path}") String ds18B20Location) {
+        String readDS18B20Execution = "cat w1_slave | grep -oP 't=\\K.*'";
         this.readDS18B20Script = "cd " + ds18B20Location + " && " + readDS18B20Execution;
     }
 
@@ -23,9 +25,5 @@ public class ScriptConstants {
                         "mcp = MCP.MCP3008(spi, cs); " +
                         "chan = AnalogIn(mcp, MCP.P0); " +
                         "print(f'{chan.voltage:.4f}')";
-
-    public String getReadDS18B20Script() {
-        return this.readDS18B20Script;
-    }
 
 }
