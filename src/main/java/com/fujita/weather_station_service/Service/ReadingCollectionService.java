@@ -4,6 +4,5 @@ import com.fujita.weather_station_service.Model.Reading;
 
 public interface ReadingCollectionService {
     void createReading();
-    String getWindDirection(int adcValue);
     int getProbeTemperature();
 }
