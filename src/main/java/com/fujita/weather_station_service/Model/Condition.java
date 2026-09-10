@@ -2,10 +2,7 @@ package com.fujita.weather_station_service.Model;
 
 import com.fujita.weather_station_service.Enums.Direction;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,7 +26,7 @@ public class Condition {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    private float mBar;
+    private float barometricPressure;
     private float temp_c;
     private float temp_f;
     private float probe_temp_c;

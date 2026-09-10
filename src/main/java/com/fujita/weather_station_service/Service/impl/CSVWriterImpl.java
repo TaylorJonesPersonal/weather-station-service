@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class CSVWriterImpl implements CSVWriterService {
@@ -24,6 +26,7 @@ public class CSVWriterImpl implements CSVWriterService {
     }
 
     public synchronized void write(Reading reading) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of("UTC"));
         try(CsvWriter csvWriter = CsvWriter.builder().fieldSeparator(',').lineDelimiter(LineDelimiter.LF).build(
                 Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)
         )) {
@@ -34,8 +37,7 @@ public class CSVWriterImpl implements CSVWriterService {
                     String.valueOf(reading.getTemperature()),
                     String.valueOf(reading.getBarometricPressure()),
                     String.valueOf(reading.getRelativeHumidity()),
-                    String.valueOf(reading.getCreatedAt()),
-                    String.valueOf(reading.getUpdatedAt())
+                    formatter.format(reading.getCreatedAt())
             );
         } catch(IOException e) {
             System.out.println(e);
