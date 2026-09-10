@@ -32,6 +32,10 @@ public class Condition {
     private float probe_temp_c;
     private float probe_temp_f;
     private float relHumidityPercent;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(255)")
     private Direction windDirection;
+
     private double windSpeed;
 }

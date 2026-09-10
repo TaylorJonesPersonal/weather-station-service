@@ -31,7 +31,6 @@ public class CSVWriterImpl implements CSVWriterService {
                 Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND)
         )) {
             csvWriter.writeRecord(
-                    String.valueOf(reading.getId()),
                     String.valueOf(reading.getCalculatedVoltage()),
                     String.valueOf(reading.getPulses()),
                     String.valueOf(reading.getTemperature()),
