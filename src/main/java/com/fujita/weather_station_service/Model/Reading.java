@@ -5,11 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.sql.Timestamp;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.time.Instant;
 
 @Entity
 @Table(name = "readings")
@@ -23,12 +19,7 @@ public class Reading {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @CreationTimestamp
-    private Timestamp createdAt;
-
-    @UpdateTimestamp
-    private Timestamp updatedAt;
-
+    private Instant createdAt = Instant.now();
     private float temperature;
     private int probeTemperature;
     private float relativeHumidity;

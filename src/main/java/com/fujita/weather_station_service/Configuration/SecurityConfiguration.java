@@ -15,12 +15,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/h2-console/**", "/api/v1/condition/**").permitAll()
                 .requestMatchers("/error").permitAll()
                 .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/v1/condition/**"));
 
         return http.build();
     }

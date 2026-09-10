@@ -44,7 +44,7 @@
             this.conditionService = conditionService;
         }
 
-        public void createReading() {
+        public Reading createReading() {
             System.out.println("--- Starting Weather Station Sensor Initialization ---");
             DecimalFormat df = new DecimalFormat("0.#");
             System.out.println("Initializing Anemometer interrupt and Python SPI telemetry link...");
@@ -100,7 +100,7 @@
                         System.out.printf("Raw ADC: %4d | Voltage: %.2fV | Direction: %s\n", rawVaneValue, calculatedVoltage, weatherConditionConverters.directionStringToDirection(direction).orElse(null));
                         newReading.setCalculatedVoltage(calculatedVoltage);
                         csvWriter.write(newReading);
-                        conditionService.createCondition(newReading);
+                        return newReading;
         }
 
         @Override

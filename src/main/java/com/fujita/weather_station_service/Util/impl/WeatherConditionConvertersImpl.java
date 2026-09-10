@@ -4,25 +4,20 @@ import com.fujita.weather_station_service.Constants.WindVaneConstants;
 import com.fujita.weather_station_service.Util.WeatherConditionConverters;
 import com.fujita.weather_station_service.Enums.Direction;
 import org.springframework.stereotype.Component;
-
-import java.text.DecimalFormat;
 import java.util.Optional;
 
 @Component
 public class WeatherConditionConvertersImpl implements WeatherConditionConverters {
 
     public float readingToMbar(float measurement) {
-        DecimalFormat df = new DecimalFormat("####");
         return measurement / 100;
     }
 
     public float cToF(float celsius) {
-        DecimalFormat df = new DecimalFormat("##.#");
         return (float)(celsius * 1.8) + 32;
     }
 
     public float fToC(float fahrenheit) {
-        DecimalFormat df = new DecimalFormat("##.#");
         return (fahrenheit - 32) * 5/9;
     }
 
@@ -31,7 +26,6 @@ public class WeatherConditionConvertersImpl implements WeatherConditionConverter
     }
 
     public double pulsesToWindSpeed(int pulses) {
-        DecimalFormat df = new DecimalFormat("##.#");
         return pulses / 3.0 * 1.492;
     }
 

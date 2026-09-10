@@ -2,26 +2,41 @@ package com.fujita.weather_station_service.Constants;
 
 public class WindVaneConstants {
     public static final int[] ADC_THRESHOLDS = {
-            961, // N    (Target: ~3.100V)
-            630, // NNE  (Target: ~2.032V)
-            780, // NE   (Target: ~2.516V)
-            737, // ENE  (Target: ~2.377V)
-            395, // E    (Target: ~1.274V)
-            426, // ESE  (Target: ~1.374V)
-            461, // SE   (Target: ~1.486V)
-            531, // SSE  (Target: ~1.712V)
-            287, // S    (Target: ~0.926V)
-            489, // SSW  (Target: ~1.579V)
-            196, // SW   (Target: ~0.632V)
-            234, // WSW  (Target: ~0.755V)
-            80,  // W    (Target: ~0.258V)
-            423, // WNW  (Target: ~1.365V)
-            127, // NW   (Target: ~0.411V)
-            886  // NNW  (Target: ~2.857V)
+            243, // N
+            406, // NNE -> (Now rounds to N)
+            564, // NE
+            83,  // ENE -> (Now rounds to E)
+            935, // E
+            65,  // ESE -> (Now rounds to E)
+            836, // SE
+            126, // SSE -> (Now rounds to S)
+            736, // S
+            244, // SSW -> (Now rounds to S)
+            395, // SW
+            599, // WSW -> (Now rounds to W)
+            76,  // W
+            827, // WNW -> (Now rounds to W)
+            134, // NW
+            702  // NNW -> (Now rounds to N)
     };
 
+    // Updated to filter out the third-degree specifications
     public static final String[] DIRECTIONS = {
-            "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
-            "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"
+            "N",  // N
+            "N",  // NNE rounded down
+            "NE", // NE
+            "E",  // ENE rounded up
+            "E",  // E
+            "E",  // ESE rounded down
+            "SE", // SE
+            "S",  // SSE rounded up
+            "S",  // S
+            "S",  // SSW rounded down
+            "SW", // SW
+            "W",  // WSW rounded up
+            "W",  // W
+            "W",  // WNW rounded down
+            "NW", // NW
+            "N"   // NNW rounded up
     };
 }
